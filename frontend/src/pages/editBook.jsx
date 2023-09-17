@@ -26,7 +26,7 @@ function EditBook() {
           }).catch((error) => {
             setLoading(false);
             alert('An error happened. Please Chack console');
-            console.log(error);
+            console.log("ERROR MESSAGE ::",error)
           });
       }, [])
 
