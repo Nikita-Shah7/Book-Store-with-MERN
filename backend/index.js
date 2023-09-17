@@ -19,8 +19,20 @@ app.get('/', (req, res) => {
     return res.status(234).send("Welcome to MERN !!")
 })
 
-
+// middleware to access routes
 app.use("/books",booksRouter)
+
+
+// middleware to handle CORS POLICY
+// OPTION 1 :: Allow all Origins with default of cors(*)
+// app.use(cors())
+// OPTION 2 :: Allow custom Origins
+app.use(cors({
+    origin: ['http://localhost:3000','http://localhost:3001'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type'],
+}))
+
 
 mongoose.connect(mongoDBURL).then(() => {
     console.log("App connected to database!!")
