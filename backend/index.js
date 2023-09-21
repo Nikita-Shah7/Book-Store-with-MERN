@@ -1,8 +1,8 @@
 import express, { json } from "express";
 import { PORT, mongoDBURL } from "./config.js"
 import mongoose from "mongoose";
-import { Book } from "./models/book.js";
 import booksRouter from "./routes/booksRoute.js";
+import userRouter from "./routes/userRoute.js"
 import cors from 'cors';
 
 const app = express();
@@ -29,6 +29,7 @@ app.use(cors())
 
 // middleware to access routes
 app.use("/books",booksRouter)
+app.use("/user",userRouter)
 
 
 

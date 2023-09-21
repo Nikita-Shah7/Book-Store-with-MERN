@@ -2,11 +2,18 @@ import React, { useState } from 'react';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import Logout from '../components/Auth/Logout';
 
 
 function CreateBook() {
+    if(localStorage.getItem("isAuth")==='false')
+    {
+        const { enqueueSnackbar } = useSnackbar();
+        enqueueSnackbar('Please Login !!', { variant: 'error' });
+        return <Navigate to={'/'} />
+    }
 
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
@@ -16,6 +23,12 @@ function CreateBook() {
     const { enqueueSnackbar } = useSnackbar();
 
     const handleSaveBook = () => {
+        if(localStorage.getItem("isAuth")==='false')
+        {
+            const { enqueueSnackbar } = useSnackbar();
+            enqueueSnackbar('Please Login !!', { variant: 'error' });
+            return <Navigate to={'/'} />
+        }
         const data = {
             title,
             author,
@@ -26,7 +39,7 @@ function CreateBook() {
             .then(() => {
                 setLoading(false);
                 enqueueSnackbar('Book Created successfully', { variant: 'success' });
-                navigate('/');
+                navigate('/home');
             })
             .catch((error) => {
                 setLoading(false);
@@ -73,6 +86,7 @@ function CreateBook() {
                     Save
                 </button>
             </div>
+            <Logout/>
         </div>
     );
 }

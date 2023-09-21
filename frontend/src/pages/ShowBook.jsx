@@ -1,11 +1,19 @@
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom';
 import BackButton from '../components/BackButton'
 import Spinner from '../components/Spinner';
+import { useSnackbar } from 'notistack';
+import Logout from '../components/Auth/Logout';
 
 function ShowBook() {
+    if(localStorage.getItem("isAuth")==='false')
+    {
+      const { enqueueSnackbar } = useSnackbar();
+      enqueueSnackbar('Please Login !!', { variant: 'error' });
+      return <Navigate to={'/'} />
+    }
+
     const [book, setBook] = useState({});
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
@@ -57,6 +65,7 @@ function ShowBook() {
               </div>
             </div>
           )}
+          <Logout/>
         </div>
       );
 }

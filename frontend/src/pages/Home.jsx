@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Spinner from '../components/Spinner';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
 import BooksTable from '../components/home/BooksTable';
 import BooksCard from '../components/home/BooksCard';
+import { useSnackbar } from 'notistack';
+import Logout from '../components/Auth/Logout';
 
 
 function Home() {
-
+  
+  if (localStorage.getItem("isAuth") === 'false') {
+    const { enqueueSnackbar } = useSnackbar();
+    enqueueSnackbar('Please Login !!', { variant: 'error' });
+    return <Navigate to={'/'} />
+  }
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showType, setShowType] = useState('table');
@@ -26,6 +33,7 @@ function Home() {
       setLoading(false)
     })
   }, [])
+
 
 
   return (
@@ -50,9 +58,10 @@ function Home() {
           <MdOutlineAddBox className='text-sky-800 text-4xl' />
         </Link>
       </div>
-      {loading ? ( <Spinner />
-      ) : ( showType === 'table' ? ( <BooksTable books={books} /> ) : ( <BooksCard books={books} /> )
+      {loading ? (<Spinner />
+      ) : (showType === 'table' ? (<BooksTable books={books} />) : (<BooksCard books={books} />)
       )}
+      <Logout />
     </div>
   );
 }

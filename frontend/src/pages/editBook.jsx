@@ -2,11 +2,18 @@ import React, { useState, useEffect } from 'react';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Navigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import Logout from '../components/Auth/Logout';
 
 
 function EditBook() {
+    if(localStorage.getItem("isAuth")==='false')
+    {
+        const { enqueueSnackbar } = useSnackbar();
+        enqueueSnackbar('Please Login !!', { variant: 'error' });
+        return <Navigate to={'/'} />
+    }
 
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
@@ -44,7 +51,7 @@ function EditBook() {
           .then(() => {
             setLoading(false);
             enqueueSnackbar('BookDetails Edited successfully', { variant: 'success' });
-            navigate('/');
+            navigate('/home');
           })
           .catch((error) => {
             setLoading(false);
@@ -91,6 +98,7 @@ function EditBook() {
                     Save
                 </button>
             </div>
+            <Logout />
         </div>
     );
 }
