@@ -20,7 +20,20 @@ function DeleteBook() {
 
     const handleDeleteBook = () => {
         setLoading(true);
-        axios.delete(`http://localhost:5555/books/${id}`)
+        const accessToken = localStorage.getItem("accessToken");
+        // console.log(accessToken)
+        if(!accessToken)
+        {
+            setLoading(false);
+            // alert('An error happened. Please Check console');
+            enqueueSnackbar('UNAUTHORIZED !!', { variant: 'error' });
+            return;
+        }
+        axios.delete(`http://localhost:5555/books/${id}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            }
+        })
             .then(() => {
                 setLoading(false);
                 enqueueSnackbar('Book Deleted successfully', { variant: 'warning' });

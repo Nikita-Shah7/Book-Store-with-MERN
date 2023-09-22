@@ -1,5 +1,7 @@
 import express from "express"
 import { Book } from "../models/book.js"
+import jwt from "jsonwebtoken"
+import { ACCESS_TOKEN_SECRET } from "../config.js"
 
 const booksRouter = express.Router()
 
@@ -90,7 +92,8 @@ booksRouter.put("/:id", async (req,res) => {
 
 
 // route to delete a Book
-booksRouter.delete("/:id", async (req,res) => {
+// only admin can delete Book
+booksRouter.delete("/:id", authenticateToken, async (req,res) => {
     try {
         const { id } = req.params
         const deleteBook = await Book.findByIdAndDelete(id)
@@ -108,6 +111,26 @@ booksRouter.delete("/:id", async (req,res) => {
         res.status(500).json({message: "Can't Delete !!"})
     }
 })
+
+// authentication of the token when loggedIn as Admin
+function authenticateToken(req, res, next) {
+    // console.log(req.headers)
+    const authHeader = req.headers['authorization']
+    // console.log(authHeader)
+    if(authHeader) {
+        const accessToken = authHeader.split(' ')[1]
+        // console.log(accessToken)
+        jwt.verify(accessToken, ACCESS_TOKEN_SECRET, (err, payload) => {
+            // console.log("ERROR MESSAGE ::",err)
+            if(err) {
+                // meaning that you have accessToken but it is not valid(moght be expired)
+                return res.status(403).json({message: "Invalid accessToken !!"})
+            }
+            else next()
+        })
+    }
+    else return res.status(401).json({message: "Unauthorized !!"})
+}
 
 
 export default booksRouter;

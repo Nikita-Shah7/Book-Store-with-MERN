@@ -9,6 +9,7 @@ function Logout() {
     const handleLogout = () => {
         localStorage.setItem("isAuth", "false")
         enqueueSnackbar('User Logged Out successfully', { variant: 'success' });
+        localStorage.removeItem("accessToken")
         navigate("/")
     }
 

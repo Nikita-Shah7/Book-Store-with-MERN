@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import Login from '../components/Auth/Login'
 import SignUp from '../components/Auth/SignUp'
+import Admin from '../components/Auth/AdminLogin'
 
 
 function Main() {
@@ -20,7 +21,7 @@ function Main() {
     return (
         <div className='p-4'>
             {loading ? (<Spinner />
-            ) : (showType === 'signup' ? (<SignUp/>) : (<Login />)
+            ) : (showType === 'signup' ? (<SignUp/>) : ( showType === 'login' ? (<Login/>) : (<Admin/>) )
             )}
             <div className='p-4'>
                 <div className='flex justify-center items-center gap-x-4'>
@@ -35,6 +36,12 @@ function Main() {
                         onClick={() => setShowType('signup')}
                     >
                         SIGNUP
+                    </button>
+                    <button
+                        className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg'
+                        onClick={() => setShowType('admin')}
+                    >
+                        ADMIN
                     </button>
                 </div>
                 <div className='flex justify-between items-center'></div>
