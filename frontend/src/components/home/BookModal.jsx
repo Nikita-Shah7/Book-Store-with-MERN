@@ -3,6 +3,22 @@ import { PiBookOpenTextLight } from 'react-icons/pi';
 import { BiUserCircle } from 'react-icons/bi';
 
 const BookModal = ({ book, onClose }) => {
+
+  var img = '';
+  if (book.image) {
+    function arrayBufferToBase64(buffer) {
+      var binary = '';
+      var bytes = [].slice.call(new Uint8Array(buffer));
+      bytes.forEach((b) => binary += String.fromCharCode(b));
+      return window.btoa(binary);
+    };
+
+    // console.log(book.image.data.data)
+    var base64Flag = 'data:image/jpeg;base64,';
+    var imageStr = arrayBufferToBase64(book.image.data.data);
+    img = base64Flag + imageStr
+  }
+
   return (
     <div
       className='fixed bg-black bg-opacity-60 top-0 left-0 right-0 bottom-0 z-50 flex justify-center items-center'
@@ -20,6 +36,9 @@ const BookModal = ({ book, onClose }) => {
           {book.publishYear}
         </h2>
         <h4 className='my-2 text-gray-500'>{book._id}</h4>
+        {img ? (
+          <img src={img} alt="nik" className='w-10 h-30' />
+        ) : ('')}
         <div className='flex justify-start items-center gap-x-2'>
           <PiBookOpenTextLight className='text-red-300 text-2xl' />
           <h2 className='my-1'>{book.title}</h2>

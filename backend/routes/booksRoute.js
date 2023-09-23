@@ -1,22 +1,49 @@
 import express from "express"
 import { Book } from "../models/book.js"
 import jwt from "jsonwebtoken"
+import fs from "fs"
+import multer from "multer"
 import { ACCESS_TOKEN_SECRET } from "../config.js"
 
 const booksRouter = express.Router()
 
 
+const storage = multer.diskStorage({
+    destination: function (req, res, cb) {
+        cb(null, 'images/')
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname)
+    }
+});
+
+
+const upload = multer({ storage: storage });
+
+
+
 // route to create a new book and save to database
-booksRouter.post("/", async (req, res) => {
+booksRouter.post("/", upload.single('image'), async (req, res) => {
     try {
+        // console.log(req.file)
         // validating the input
         if (!req.body.title || !req.body.author || !req.body.publishYear) {
             return res.status(400).json({ message: "All fields are mandatory !!" })
         }
-        const newBook = {
+        var newBook = {
             title: req.body.title,
             author: req.body.author,
             publishYear: req.body.publishYear,
+            image: {
+                // data: fs.readFileSync('images/'+req.file.originalname),
+                // contentType: 'image/png'
+            },
+        }
+        if(req.file) {
+            newBook.image = {
+                data: fs.readFileSync('images/'+req.file.originalname),
+                contentType: 'image/png'
+            }
         }
         const createdBook = await Book.create(newBook)
         if (createdBook) {
