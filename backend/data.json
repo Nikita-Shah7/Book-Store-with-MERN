@@ -1,0 +1,52 @@
+[
+    {
+        "title": "The Catcher in the Rye",
+        "author": "J.D. Salinger",
+        "publishYear": 1951
+    },
+    {
+        "title": "Pride and Prejudice",
+        "author": "Jane Austen",
+        "publishYear": 1813
+    },
+    {
+        "title": "1984",
+        "author": "George Orwell",
+        "publishYear": 1949
+    },
+    {
+        "title": "To Kill a Mockingbird",
+        "author": "Harper Lee",
+        "publishYear": 1960
+    },
+    {
+        "title": "The Great Gatsby",
+        "author": "F. Scott Fitzgerald",
+        "publishYear": 1925
+    },
+    {
+        "title": "Moby-Dick",
+        "author": "Herman Melville",
+        "publishYear": 1851
+    },
+    {
+        "title": "The Lord of the Rings",
+        "author": "J.R.R. Tolkien",
+        "publishYear": 1954
+    },
+    {
+        "title": "The Hobbit",
+        "author": "J.R.R. Tolkien",
+        "publishYear": 1937
+    },
+    {
+        "title": "The Harry Potter Series",
+        "author": "J.K. Rowling",
+        "publishYear": 1997
+    },
+    {
+        "title": "Brave New World",
+        "author": "Aldous Huxley",
+        "publishYear": 1932
+    }
+]

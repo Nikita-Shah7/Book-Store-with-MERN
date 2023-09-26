@@ -61,15 +61,41 @@ booksRouter.post("/", upload.single('image'), async (req, res) => {
 })
 
 
-// route to get all books from database
+// route to get all books from database OR
+// get books based on search term(search by title or author)
 booksRouter.get("/", async (req, res) => {
     try {
-        const allBooks = await Book.find()
-        return res.status(200).json({
-            message: "All books received !!",
-            count: allBooks.length,
-            data: allBooks
-        })
+        const { title, author } = req.query
+        const query = {
+            $or: []
+        };
+
+        if (title) {
+            query.$or.push({ title: { $regex: new RegExp(title, "i") } });
+        }
+
+        if (author) {
+            query.$or.push({ author: { $regex: new RegExp(author, "i") } });
+        }
+        // if(query==null) then(allBooks will be returned)
+        // console.log(query)
+        // console.log(query.$or)
+        if (query.$or.length === 0) {
+            const allBooks = await Book.find();
+            return res.status(200).json({
+                message: "All books received !!",
+                count: allBooks.length,
+                data: allBooks
+            });
+        }
+        else {
+            let filteredBooks = await Book.find(query);
+            return res.status(200).json({
+                message: "All books received !!",
+                count: filteredBooks.length,
+                data: filteredBooks
+            })
+        }
     } catch (error) {
         console.log("ERROR MESSAGE ::", error.message)
         res.status(500).json({ message: "Can't get all books!!" })

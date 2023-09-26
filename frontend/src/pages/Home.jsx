@@ -9,10 +9,11 @@ import BooksTable from '../components/home/BooksTable';
 import BooksCard from '../components/home/BooksCard';
 import { useSnackbar } from 'notistack';
 import Logout from '../components/Auth/Logout';
+import SearchBar from '../components/SearchBar';
 
 
 function Home() {
-  
+
   if (localStorage.getItem("isAuth") === 'false') {
     const { enqueueSnackbar } = useSnackbar();
     enqueueSnackbar('Please Login !!', { variant: 'error' });
@@ -21,10 +22,11 @@ function Home() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showType, setShowType] = useState('table');
+  const [searchTerm, setsearchTerm] = useState('');
 
   useEffect(() => {
     setLoading(true)
-    axios.get('http://localhost:5555/books').then((response) => {
+    axios.get(`http://localhost:5555/books?title=${searchTerm}&author=${searchTerm}`).then((response) => {
       setBooks(response.data.data)
       setLoading(false)
 
@@ -32,7 +34,7 @@ function Home() {
       console.log("ERROR MESSAGE ::", error)
       setLoading(false)
     })
-  }, [])
+  }, [searchTerm])
 
 
 
@@ -58,6 +60,7 @@ function Home() {
           <MdOutlineAddBox className='text-sky-800 text-4xl' />
         </Link>
       </div>
+      <SearchBar searchTerm={searchTerm} setsearchTerm={setsearchTerm} />
       {loading ? (<Spinner />
       ) : (showType === 'table' ? (<BooksTable books={books} />) : (<BooksCard books={books} />)
       )}
