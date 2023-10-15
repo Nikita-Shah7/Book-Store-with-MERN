@@ -22,18 +22,48 @@ booksRouter.post("/", async (req, res) => {
     }
 });
 
-
+// get books according to pagination
 booksRouter.get("/", async (req, res) => {
     try {
-        const allBooks = await pool.query("SELECT*FROM \"Book\"");
+        let { page, limit } = req.query;
+        let booksCount = await pool.query("SELECT COUNT(*) FROM \"Book\"")
+        booksCount = booksCount.rows[0].count;
+        if (page < 1)
+            page = 1;
+        if (page > Math.ceil(booksCount / limit))
+            page = Math.ceil(booksCount / limit);
+        let startIndex = (page - 1) * limit;
+        let endIndex = Math.min(page * limit - 1, booksCount - 1);
+        console.log(startIndex, endIndex)
+        const paginatedBooks = await pool.query(`SELECT*FROM \"Book\" LIMIT ${limit} OFFSET ${startIndex}`);
         return res.status(200).json({
-            message: "All books received !!",
-            count: allBooks.rows.length,
-            data: allBooks.rows
+            message: "All paginatedBooks received !!",
+            count: paginatedBooks.rows.length,
+            data: paginatedBooks.rows
         });
+        // const allBooks = await pool.query("SELECT*FROM \"Book\"");
+        // return res.status(200).json({
+        //     message: "All books received !!",
+        //     count: allBooks.rows.length,
+        //     data: allBooks.rows
+        // });
     } catch (error) {
         console.log("ERROR MESSAGE ::", error.message)
         res.status(500).json({ message: "Can't get all books!!" })
+    }
+});
+
+
+booksRouter.get("/getBookCount", async (req, res) => {
+    try {
+        const booksCount = await pool.query("SELECT COUNT(*) FROM \"Book\"");
+        return res.status(200).json({
+            message: "BooksCount received !!",
+            data: booksCount.rows[0].count
+        });
+    } catch (error) {
+        console.log("ERROR MESSAGE ::", error.message)
+        res.status(500).json({ message: "Can't get all books!!" })        
     }
 });
 
@@ -43,8 +73,7 @@ booksRouter.get("/:id", async (req, res) => {
         const { id } = req.params
         const oneBook = await pool.query("SELECT * FROM \"Book\" WHERE _id = $1", [id]);
         // console.log(oneBook.rows)
-        if(!oneBook.rows[0])
-        {
+        if (!oneBook.rows[0]) {
             return res.status(404).json({ message: "Book not found !!" })
         }
         return res.status(200).json({
@@ -65,9 +94,9 @@ booksRouter.put("/:id", async (req, res) => {
             return res.status(400).json({ message: "All fields are mandatory !!" })
         }
         const { id } = req.params
-        const updateBook = await pool.query("UPDATE \"Book\" SET title = $1, author = $2, \"publishYear\" = $3 WHERE _id = $4;",[req.body.title, req.body.author, req.body.publishYear, id]);
+        const updateBook = await pool.query("UPDATE \"Book\" SET title = $1, author = $2, \"publishYear\" = $3 WHERE _id = $4;", [req.body.title, req.body.author, req.body.publishYear, id]);
 
-        if (updateBook.rowCount==0) {
+        if (updateBook.rowCount == 0) {
             return res.status(404).json({ message: "Book not found !!" })
         }
         return res.status(200).json({
@@ -84,9 +113,8 @@ booksRouter.put("/:id", async (req, res) => {
 booksRouter.delete("/:id", async (req, res) => {
     try {
         const { id } = req.params
-        const deleteBook = await pool.query("DELETE FROM \"Book\" WHERE _id = $1;",[id]);
-        if(deleteBook.rowCount==0)
-        {
+        const deleteBook = await pool.query("DELETE FROM \"Book\" WHERE _id = $1;", [id]);
+        if (deleteBook.rowCount == 0) {
             return res.status(404).json({ message: "Book not found !!" });
         }
         return res.status(200).json({

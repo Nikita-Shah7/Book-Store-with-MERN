@@ -10,6 +10,7 @@ import BooksCard from '../components/home/BooksCard';
 import { useSnackbar } from 'notistack';
 import Logout from '../components/Auth/Logout';
 import SearchBar from '../components/SearchBar';
+import Pagination from '../components/home/PaginationBar/PaginationBar';
 
 
 function Home() {
@@ -23,10 +24,12 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [showType, setShowType] = useState('table');
   const [searchTerm, setsearchTerm] = useState('');
+  const [currPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(4);
 
   useEffect(() => {
     setLoading(true)
-    axios.get(`http://localhost:5555/books?title=${searchTerm}&author=${searchTerm}`).then((response) => {
+    axios.get(`http://localhost:5555/books?title=${searchTerm}&author=${searchTerm}&page=${currPage}&limit=${limit}`).then((response) => {
       setBooks(response.data.data)
       setLoading(false)
 
@@ -34,7 +37,11 @@ function Home() {
       console.log("ERROR MESSAGE ::", error)
       setLoading(false)
     })
-  }, [searchTerm])
+  }, [searchTerm,currPage])
+
+  const handleSetCurrentPage = (curr) => {
+    setCurrentPage(curr)
+  }
 
 
 
@@ -62,8 +69,9 @@ function Home() {
       </div>
       <SearchBar searchTerm={searchTerm} setsearchTerm={setsearchTerm} />
       {loading ? (<Spinner />
-      ) : (showType === 'table' ? (<BooksTable books={books} />) : (<BooksCard books={books} />)
+      ) : (showType === 'table' ? (<BooksTable books={books} currPage={currPage} handleSetCurrentPage={handleSetCurrentPage} limit={limit}/>) : (<BooksCard books={books} currPage={currPage} handleSetCurrentPage={handleSetCurrentPage} limit={limit}/>)
       )}
+      <Pagination currPage={currPage} handleSetCurrentPage={handleSetCurrentPage} limit={limit}/>
       <Logout />
     </div>
   );

@@ -4,7 +4,9 @@ import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
 
 
-function BooksTable({ books }) {
+function BooksTable({ books, currPage, limit }) {
+    const startIndex = (currPage - 1) * limit;
+
     return (
         <table className='w-full border-separate border-spacing-2'>
             <thead>
@@ -24,7 +26,7 @@ function BooksTable({ books }) {
                 {books.map((book, index) => (
                     <tr key={book._id} className='h-8'>
                         <td className='border border-slate-700 rounded-md text-center'>
-                            {index + 1}
+                            {startIndex+  index + 1}
                         </td>
                         <td className='border border-slate-700 rounded-md text-center'>
                             {book.title}

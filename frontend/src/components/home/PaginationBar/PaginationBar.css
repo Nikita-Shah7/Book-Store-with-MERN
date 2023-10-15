@@ -1,0 +1,30 @@
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.pagination button {
+    width: 2rem;
+    height: 2rem;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 16px;
+    margin: 2rem 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: transparent;
+    color: grey;
+    border-radius: 10%;
+    border: 1px solid grey;
+    padding: 4px;
+}
+
+.pagination button.active {
+    font-weight: 900;
+    border-color: #101010;
+    background: lightskyblue;
+    color: #101010;
+}
