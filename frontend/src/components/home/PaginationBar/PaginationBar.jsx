@@ -10,7 +10,7 @@ function Pagination(props) {
     const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
-        axios.get("http://localhost:5555/books/getBookCount").then((response) => {
+        axios.get(`http://localhost:5555/books/getBookCount?title=${props.searchTerm}&author=${props.searchTerm}`).then((response) => {
             setTotalPages(Math.ceil(response.data.data/props.limit))
             setLoading(false)
 
@@ -18,7 +18,7 @@ function Pagination(props) {
             console.log("ERROR MESSAGE ::", error)
             setLoading(false)
         })
-    },[]);
+    },[props.searchTerm]);
 
     let pages = [];
     for (let i = 1; i <= totalPages; i++) {

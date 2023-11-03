@@ -71,7 +71,7 @@ function Home() {
       {loading ? (<Spinner />
       ) : (showType === 'table' ? (<BooksTable books={books} currPage={currPage} handleSetCurrentPage={handleSetCurrentPage} limit={limit}/>) : (<BooksCard books={books} currPage={currPage} handleSetCurrentPage={handleSetCurrentPage} limit={limit}/>)
       )}
-      <Pagination currPage={currPage} handleSetCurrentPage={handleSetCurrentPage} limit={limit}/>
+      <Pagination searchTerm={searchTerm} currPage={currPage} handleSetCurrentPage={handleSetCurrentPage} limit={limit}/>
       <Logout />
     </div>
   );

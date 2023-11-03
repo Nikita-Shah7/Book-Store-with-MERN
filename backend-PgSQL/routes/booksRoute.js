@@ -25,8 +25,11 @@ booksRouter.post("/", async (req, res) => {
 // get books according to pagination
 booksRouter.get("/", async (req, res) => {
     try {
-        let { page, limit } = req.query;
-        let booksCount = await pool.query("SELECT COUNT(*) FROM \"Book\"")
+        let { page, limit, title, author } = req.query;
+        title = title ? `${title}%` : '%'; // sanitize the input
+        author = author ? `${author}%` : '%'; // sanitize the input
+        // console.log(title,author, typeof title)
+        let booksCount = await pool.query('SELECT COUNT(*) FROM \"Book\" WHERE author ILIKE $1 OR title ILIKE $2',[author,title]);
         booksCount = booksCount.rows[0].count;
         if (page < 1)
             page = 1;
@@ -35,13 +38,14 @@ booksRouter.get("/", async (req, res) => {
         let startIndex = (page - 1) * limit;
         let endIndex = Math.min(page * limit - 1, booksCount - 1);
         console.log(startIndex, endIndex)
-        const paginatedBooks = await pool.query(`SELECT*FROM \"Book\" LIMIT ${limit} OFFSET ${startIndex}`);
+        // const paginatedBooks = await pool.query(`SELECT*FROM \"Book\" LIMIT ${limit} OFFSET ${startIndex}`);
+        const paginatedBooks = await pool.query('SELECT*FROM \"Book\" WHERE author ILIKE $1 OR title ILIKE $2 LIMIT $3 OFFSET $4',[author,title,limit,startIndex]);
         return res.status(200).json({
             message: "All paginatedBooks received !!",
             count: paginatedBooks.rows.length,
             data: paginatedBooks.rows
         });
-        // const allBooks = await pool.query("SELECT*FROM \"Book\"");
+        // const allBooks = await pool.query(`SELECT*FROM \"Book\" WHERE author ILIKE \'${author}\'`);
         // return res.status(200).json({
         //     message: "All books received !!",
         //     count: allBooks.rows.length,
@@ -55,8 +59,12 @@ booksRouter.get("/", async (req, res) => {
 
 
 booksRouter.get("/getBookCount", async (req, res) => {
+    let { title, author } = req.query;
+    title = title ? `${title}%` : '%'; // sanitize the input
+    author = author ? `${author}%` : '%'; // sanitize the input
     try {
-        const booksCount = await pool.query("SELECT COUNT(*) FROM \"Book\"");
+        // const booksCount = await pool.query("SELECT COUNT(*) FROM \"Book\"");
+        const booksCount = await pool.query('SELECT COUNT(*) FROM \"Book\" WHERE author ILIKE $1 OR title ILIKE $2',[author,title]);
         return res.status(200).json({
             message: "BooksCount received !!",
             data: booksCount.rows[0].count
