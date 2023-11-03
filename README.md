@@ -26,8 +26,8 @@ npm install
 #### Start Backend Server:
 | Database | Command |
 | :-------- | :--------- |
-| **MongoDB** | `cd backend` | `npm run dev` |
-| **Postgres** | `cd backend-PgSQL` |`npm run dev` |
+| **MongoDB** | `cd backend` `npm run dev` |
+| **Postgres** | `cd backend-PgSQL` `npm run dev` |
 
 #### Start Frontend Client:
 ```bash
